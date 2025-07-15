@@ -1,0 +1,10 @@
+# Root
+.DS_Store
+
+# Node
+node_modules/
+.env
+
+# Build output
+dist/
+build/
