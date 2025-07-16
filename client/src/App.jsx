@@ -1,19 +1,19 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Register from "./pages/Register.jsx";
+import Login from "./pages/Login.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import Navbar from "./components/Navbar.jsx";
 
 function App() {
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/api")
-      .then((res) => setMessage(res.data))
-      .catch((err) => setMessage("Failed to fetch API"));
-  }, []);
   return (
-    <div className="p-10 text-xl">
-      Backend says: <strong>{message}</strong>
-    </div>
+    <BrowserRouter>
+      <Navbar />
+      <Routes>
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
