@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import db from "./utils/db.js";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import projectRoutes from "./routes/project.routes.js";
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use(
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/projects", projectRoutes);
 
 // connecting to Mongo DB
 db();
