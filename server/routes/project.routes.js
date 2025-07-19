@@ -63,4 +63,5 @@ router.delete("/:id", authMiddleware, async (req, res) => {
   }
 });
 
+// router.get("/projects", authMiddleware, async (req, res) => {});
 export default router;
