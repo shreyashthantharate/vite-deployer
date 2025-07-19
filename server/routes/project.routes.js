@@ -34,4 +34,33 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
+router.get("/:id", authMiddleware, async (req, res) => {
+  try {
+    const project = await Project.findOne({
+      _id: req.params.id,
+      user: req.user.id,
+    });
+    if (!project) return res.status(404).json({ message: "Project not found" });
+    res.json(project);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.delete("/:id", authMiddleware, async (req, res) => {
+  try {
+    const project = await Project.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user.id,
+    });
+    if (!project)
+      return res
+        .status(404)
+        .json({ message: "Project not found or unauthorized" });
+    res.json({ message: "Project deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 export default router;
