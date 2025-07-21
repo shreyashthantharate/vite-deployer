@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import MyProjects from "../components/MyProjects";
 
 function Dashboard() {
   const [user, setUser] = useState(null);
@@ -34,6 +35,7 @@ function Dashboard() {
     <div>
       <h2>Dashboard</h2>
       {user ? <p>Welcome, {user.email} </p> : <p>Loading user info...</p>}
+      <MyProjects />
     </div>
   );
 }
