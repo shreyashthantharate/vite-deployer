@@ -63,5 +63,24 @@ router.delete("/:id", authMiddleware, async (req, res) => {
   }
 });
 
+router.patch("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { projectName, projectDescription, techStack } = req.body;
+
+    const updatedProject = await Project.findByIdAndUpdate(
+      id,
+      { projectName, projectDescription, techStack },
+      { new: true }
+    );
+    if (!updatedProject) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+    res.status(200).json(updatedProject);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating project", error });
+  }
+});
+
 // router.get("/projects", authMiddleware, async (req, res) => {});
 export default router;
