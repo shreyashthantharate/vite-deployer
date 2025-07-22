@@ -1,10 +1,11 @@
 import express from "express";
 import Project from "../model/Project.model.js";
 import authMiddleware from "../middleware/auth.middleware.js";
+import upload from "../middleware/upload.middleware.js";
 
 const router = express.Router();
 
-router.post("/", authMiddleware, async (req, res) => {
+router.post("/", authMiddleware, upload.single("image"), async (req, res) => {
   const { name, html, css, js } = req.body;
   try {
     const project = new Project({
@@ -63,7 +64,7 @@ router.delete("/:id", authMiddleware, async (req, res) => {
   }
 });
 
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", upload.single("image"), async (req, res) => {
   try {
     const { id } = req.params;
     const { projectName, projectDescription, techStack } = req.body;

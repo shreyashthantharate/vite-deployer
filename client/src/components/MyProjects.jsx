@@ -10,6 +10,7 @@ function MyProjects() {
   const [editedName, setEditedName] = useState("");
   const [editedDesc, setEditedDesc] = useState("");
   const [editedTech, setEditedTech] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const token = localStorage.getItem("token"); // or however you're storing it
   if (!token) {
@@ -67,27 +68,63 @@ function MyProjects() {
     }
   };
 
+  // const handleUpdate = async (projectId) => {
+  //   try {
+  //     const res = await fetch(`/api/projects/${projectId}`, {
+  //       method: "PATCH",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         projectName: editedName,
+  //         projectDescription: editedDesc,
+  //         techStack: editedTech,
+  //       }),
+  //     });
+
+  //     if (res.ok) {
+  //       const updatedProject = await res.json();
+  //       // Update state locally
+  //       setProjects((prev) =>
+  //         prev.map((proj) => (proj._id === projectId ? updatedProject : proj))
+  //       );
+  //       setEditingProjectId(null); // Close edit form
+  //     } else {
+  //       console.error("Update failed");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating project:", error);
+  //   }
+  // };
+
   const handleUpdate = async (projectId) => {
+    const formData = new FormData();
+    formData.append("projectName", editedName);
+    formData.append("projectDescription", editedDesc);
+    formData.append("techStack", editedTech);
+
+    if (selectedImage) {
+      formData.append("image", selectedImage); // this must match multer field name
+    }
+
     try {
       const res = await fetch(`/api/projects/${projectId}`, {
         method: "PATCH",
         headers: {
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          // do NOT set Content-Type manually
         },
-        body: JSON.stringify({
-          projectName: editedName,
-          projectDescription: editedDesc,
-          techStack: editedTech,
-        }),
+        body: formData,
       });
 
       if (res.ok) {
         const updatedProject = await res.json();
-        // Update state locally
+
         setProjects((prev) =>
           prev.map((proj) => (proj._id === projectId ? updatedProject : proj))
         );
-        setEditingProjectId(null); // Close edit form
+        setEditingProjectId(null);
+        setSelectedImage(null); // optional: clear image state
       } else {
         console.error("Update failed");
       }
@@ -129,7 +166,7 @@ function MyProjects() {
               className="border p-4 rounded shadow-sm bg-white"
             >
               {editingProjectId === project._id ? (
-                // 👇 Editing Mode
+                //  Editing Mode
                 <div className="space-y-2">
                   <input
                     type="text"
@@ -151,6 +188,26 @@ function MyProjects() {
                     placeholder="Tech Stack"
                     className="w-full p-2 border"
                   />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setSelectedImage(e.target.files[0])}
+                  />
+
+                  {selectedImage && (
+                    <img
+                      src={URL.createObjectURL(selectedImage)}
+                      alt="Preview"
+                      className="w-32 h-32 object-cover mt-2 rounded"
+                    />
+                  )}
+                  {project.imageUrl && (
+                    <img
+                      src={project.imageUrl}
+                      alt={project.projectName}
+                      className="w-32 h-32 object-cover rounded mb-2"
+                    />
+                  )}
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleUpdate(project._id)}
@@ -159,7 +216,10 @@ function MyProjects() {
                       Save
                     </button>
                     <button
-                      onClick={() => setEditingProjectId(null)}
+                      onClick={() => {
+                        setEditingProjectId(null);
+                        setSelectedImage(null);
+                      }}
                       className="bg-gray-500 text-white px-3 py-1 rounded"
                     >
                       Cancel
@@ -167,7 +227,7 @@ function MyProjects() {
                   </div>
                 </div>
               ) : (
-                // 👇 Normal View Mode
+                // Normal View Mode
                 <>
                   <h3 className="text-xl font-semibold">
                     {project.projectName}
