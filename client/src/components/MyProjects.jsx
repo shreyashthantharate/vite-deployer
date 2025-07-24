@@ -54,18 +54,18 @@ function MyProjects() {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`/api/projects/${projectId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const res = await fetch(`https://localhost:5000/api/projects/${id}`, {
+        method: "DELETE",
       });
-
-      // Remove deleted project from UI
-      setProjects((prevProjects) =>
-        prevProjects.filter((project) => project._id !== projectId)
-      );
-    } catch (err) {
-      console.error("Error deleting project:", err);
+      if (res.ok) {
+        alert("Project deleted");
+        // Refresh the project list
+        setProjects(projects.filter((project) => project._id !== id));
+      } else {
+        alert("Failed to delete project");
+      }
+    } catch (error) {
+      console.error("Error deleting project:", error);
       alert("Failed to delete project. Try again.");
     }
   };

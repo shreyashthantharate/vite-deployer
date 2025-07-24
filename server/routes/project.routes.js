@@ -4,7 +4,7 @@ import authMiddleware from "../middleware/auth.middleware.js";
 import upload from "../middleware/upload.middleware.js";
 
 const router = express.Router();
-
+//project create route
 router.post("/", authMiddleware, upload.single("image"), async (req, res) => {
   const { name, html, css, js } = req.body;
   try {
@@ -48,6 +48,7 @@ router.get("/:id", authMiddleware, async (req, res) => {
   }
 });
 
+// project delete route
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
     const project = await Project.findOneAndDelete({
