@@ -24,6 +24,7 @@ router.post("/", authMiddleware, upload.single("image"), async (req, res) => {
   }
 });
 
+// get project
 router.get("/", authMiddleware, async (req, res) => {
   try {
     const projects = await Project.find({ user: req.user.id });

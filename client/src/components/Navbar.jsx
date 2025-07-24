@@ -1,6 +1,6 @@
 // components/Navbar.jsx
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthContext.jsx";
 import { logout } from "../utils/Logout";
 import { Link, useNavigate } from "react-router-dom";
 

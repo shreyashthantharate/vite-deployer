@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 
+// ✅ Correct export
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -9,7 +10,6 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (token) {
       axios
         .get("http://localhost:5000/api/user/me", {
@@ -20,8 +20,7 @@ export const AuthProvider = ({ children }) => {
         .then((res) => {
           setUser(res.data.user);
         })
-        .catch((error) => {
-          console.error(error.response?.data || "Auth check failed");
+        .catch((err) => {
           localStorage.removeItem("token");
           localStorage.removeItem("user");
           setUser(false);
