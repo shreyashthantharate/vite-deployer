@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
 
 function MyProjects() {
   const [projects, setProjects] = useState([]);
@@ -11,6 +12,7 @@ function MyProjects() {
   const [editedDesc, setEditedDesc] = useState("");
   const [editedTech, setEditedTech] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("token"); // or however you're storing it
   if (!token) {
@@ -165,100 +167,32 @@ function MyProjects() {
               key={project._id}
               className="border p-4 rounded shadow-sm bg-white"
             >
-              {editingProjectId === project._id ? (
-                //  Editing Mode
-                <div className="space-y-2">
-                  <input
-                    type="text"
-                    value={editedName}
-                    onChange={(e) => setEditedName(e.target.value)}
-                    placeholder="Project Name"
-                    className="w-full p-2 border"
-                  />
-                  <textarea
-                    value={editedDesc}
-                    onChange={(e) => setEditedDesc(e.target.value)}
-                    placeholder="Project Description"
-                    className="w-full p-2 border"
-                  />
-                  <input
-                    type="text"
-                    value={editedTech}
-                    onChange={(e) => setEditedTech(e.target.value)}
-                    placeholder="Tech Stack"
-                    className="w-full p-2 border"
-                  />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setSelectedImage(e.target.files[0])}
-                  />
+              <h3 className="text-xl font-semibold">{project.projectName}</h3>
+              <p className="text-gray-700">{project.projectDescription}</p>
+              <p className="text-sm text-gray-500 mb-2">{project.techStack}</p>
 
-                  {selectedImage && (
-                    <img
-                      src={URL.createObjectURL(selectedImage)}
-                      alt="Preview"
-                      className="w-32 h-32 object-cover mt-2 rounded"
-                    />
-                  )}
-                  {project.imageUrl && (
-                    <img
-                      src={project.imageUrl}
-                      alt={project.projectName}
-                      className="w-32 h-32 object-cover rounded mb-2"
-                    />
-                  )}
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleUpdate(project._id)}
-                      className="bg-green-600 text-white px-3 py-1 rounded"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={() => {
-                        setEditingProjectId(null);
-                        setSelectedImage(null);
-                      }}
-                      className="bg-gray-500 text-white px-3 py-1 rounded"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                // Normal View Mode
-                <>
-                  <h3 className="text-xl font-semibold">
-                    {project.projectName}
-                  </h3>
-                  <p className="text-gray-700">{project.projectDescription}</p>
-                  <p className="text-sm text-gray-500 mb-2">
-                    {project.techStack}
-                  </p>
-
-                  <div className="flex gap-2">
-                    <button
-                      className="bg-blue-600 text-white px-3 py-1 rounded"
-                      onClick={() => {
-                        setEditingProjectId(project._id);
-                        setEditedName(project.projectName);
-                        setEditedDesc(project.projectDescription);
-                        setEditedTech(project.techStack);
-                      }}
-                    >
-                      Edit
-                    </button>
-
-                    <button
-                      className="bg-red-500 text-white px-3 py-1 rounded"
-                      onClick={() => handleDelete(project._id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </>
+              {project.imageUrl && (
+                <img
+                  src={project.imageUrl}
+                  alt={project.projectName}
+                  className="w-32 h-32 object-cover rounded mb-2"
+                />
               )}
+
+              <div className="flex gap-2">
+                <Link to={`/edit-project/${project._id}`}>
+                  <button className="bg-blue-600 text-white px-3 py-1 rounded">
+                    Edit
+                  </button>
+                </Link>
+
+                <button
+                  className="bg-red-500 text-white px-3 py-1 rounded"
+                  onClick={() => handleDelete(project._id)}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           ))}
         </div>
